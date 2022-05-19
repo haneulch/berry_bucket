@@ -10,6 +10,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { MysqlConfigService } from './mysql-config/mysql-config.service';
 import { DatabaseModule } from './database/database.module';
 import { UserModule } from './user/user.module';
+import { BucketlistModule } from './bucketlist/bucketlist.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { UserModule } from './user/user.module';
     }),
     DatabaseModule,
     UserModule,
+    BucketlistModule,
   ],
   controllers: [AppController],
   providers: [
