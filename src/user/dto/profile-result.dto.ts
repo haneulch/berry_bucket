@@ -7,7 +7,7 @@ export class ProfileResult {
   @Expose()
   email: number;
 
-  @ApiProperty({ description: '이름', example: '마이버리' })
+  @ApiProperty({ description: '이름', example: '홍길동' })
   @Expose()
   name: string;
 

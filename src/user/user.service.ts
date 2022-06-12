@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { UsersService } from '../database/users/users.service';
-import { CreateProfile } from './dto/create-profile.dto';
+import { CreateProfile } from './dto/create-profile-request.dto';
+import { UpdateProfile } from './dto/update-profile-request.dto';
+import { JoinRequest } from './dto/join-request.dto';
 import { Utils } from '../common/utils';
 import { User } from '../database/users/entities/user.entity';
-import { UpdateProfile } from './dto/update-profile.dto';
 
 class CreateUserDto {}
 
@@ -15,23 +16,20 @@ export class UserService {
     return 'This action adds a new user';
   }
 
-  async findOne(id: string) {
+  async findOne(id: number) {
     return this.usersService.findById(id);
   }
 
-  findById(userId: string) {
+  findById(userId: number) {
     return this.usersService.findById(userId);
   }
 
-  async createProfile(userId: string, profileImage: Express.Multer.File, createProfile: CreateProfile) {
-    const { accountType, name, bio } = createProfile;
-    const request: User = {
-      accountType: accountType.valueOf(),
-      name,
-      bio,
-      ...(profileImage && { imgUrl: `${Utils.getDBFilePath(profileImage)}` }),
-    };
-    await this.usersService.update(userId, request);
+  async createProfile(userId: number, profileImage: Express.Multer.File, createProfile: CreateProfile) {
+    const user = createProfile.toEntity();
+    if (profileImage) {
+      user.imgUrl = Utils.getDBFilePath(profileImage);
+    }
+    await this.usersService.update(userId, user);
     return { success: true };
   }
 
@@ -41,9 +39,20 @@ export class UserService {
    * @param profileImage
    * @param updateProfile
    */
-  async updateProfile(userId: string, profileImage: Express.Multer.File, updateProfile: UpdateProfile) {
-    const request = { ...updateProfile, ...(profileImage && { imgUrl: `${Utils.getDBFilePath(profileImage)}` }) };
-    await this.usersService.update(userId, request);
+  async updateProfile(userId: number, profileImage: Express.Multer.File, updateProfile: UpdateProfile) {
+    const user: User = updateProfile.toEntity();
+    if (profileImage) {
+      user.imgUrl = Utils.getDBFilePath(profileImage);
+    }
+    await this.usersService.update(userId, user);
     return { success: true };
+  }
+
+  /**
+   * 회원가입
+   * @param join
+   */
+  async join(join: JoinRequest) {
+    return this.usersService.save(join.toEntity());
   }
 }

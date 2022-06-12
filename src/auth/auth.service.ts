@@ -16,7 +16,7 @@ export class AuthService {
    * access token 생성
    * @param userId
    */
-  private generateAccessToken(userId: string) {
+  private generateAccessToken(userId: number) {
     const payload = { userId };
     const accessToken = this.jwtService.sign(payload, {
       secret: this.configService.get('JWT_ACCESS_TOKEN_SECRET'),
@@ -29,7 +29,7 @@ export class AuthService {
    * refresh token 생성
    * @param userId
    */
-  private generateRefreshToken(userId: string) {
+  private generateRefreshToken(userId: number) {
     const refreshPayload = { userId, refresh: true };
     const refreshToken = this.jwtService.sign(refreshPayload, {
       secret: this.configService.get('JWT_REFRESH_TOKEN_SECRET'),
@@ -42,7 +42,7 @@ export class AuthService {
    * login (토큰 발급)
    * @param userId
    */
-  async login(userId: string) {
+  async login(userId: number) {
     const user = await this.usersService.findIdById(userId);
     if (user.length > 0) {
       const { accessToken } = this.generateAccessToken(userId);

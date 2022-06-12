@@ -34,7 +34,7 @@ export class AppController {
   @ApiHeader({ name: 'token' })
   @UseGuards(JwtRefreshAuthGuard)
   @Get('token/refresh')
-  async tokenRefresh(@UserId() userId: string) {
+  async tokenRefresh(@UserId() userId: number) {
     return await this.authService.login(userId);
   }
 }

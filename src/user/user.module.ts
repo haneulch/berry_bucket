@@ -4,6 +4,7 @@ import { UserController } from './user.controller';
 import { DatabaseModule } from '../database/database.module';
 import { MulterModule } from '@nestjs/platform-express';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { AuthModule } from '../auth/auth.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
       }),
       inject: [ConfigService],
     }),
+    AuthModule,
   ],
   controllers: [UserController],
   providers: [UserService],

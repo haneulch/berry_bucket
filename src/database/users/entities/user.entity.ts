@@ -1,42 +1,45 @@
-import { Column, CreateDateColumn, Entity, PrimaryColumn, UpdateDateColumn } from 'typeorm';
-import { YnType } from '../../../common/enums/common-enum';
-import { EntityTransformer } from '../../../common/transformer/entity-transformer';
+import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { AccountType, YnType } from '../../../common/enums/common-enum';
+import { UserStatus } from '../../../common/enums/user-status.enum';
+import { Bucketlist } from '../../bucketlists/entity/bucketlist.entity';
+import { DateTime } from 'luxon';
+import { Utils } from '../../../common/utils';
 
-@Entity({ name: 'mt_user' })
+@Entity({ name: 'user' })
 export class User {
-  @PrimaryColumn()
-  id?: string;
+  @PrimaryGeneratedColumn()
+  id?: number;
 
-  @Column({ ...EntityTransformer.TRANSFORMER })
-  email?: number;
+  @Column()
+  email: string;
 
-  @Column({ name: 'account_type' })
-  accountType?: number;
+  @Column({ default: AccountType.ANDROID })
+  accountType?: AccountType;
 
-  @Column({ ...EntityTransformer.TRANSFORMER })
+  @Column()
   name?: string;
 
-  @Column({ name: 'img_url', ...EntityTransformer.TRANSFORMER })
+  @Column({ nullable: true })
   imgUrl?: string;
 
-  @Column({ name: 'user_seq' })
-  userSeq?: number;
-
-  @Column()
+  @Column({ nullable: true })
   bio?: string;
 
-  @Column({ name: 'alarm_yn' })
+  @Column({ default: YnType.Y })
   alarmYn?: YnType;
 
-  @Column({ name: 'last_login_dt' })
-  lastLoginDt?: Date;
+  @Column({ type: 'datetime', default: Utils.nowDate() })
+  lastLoginDt?: DateTime;
 
-  @Column()
-  enabled?: boolean;
+  @Column({ default: UserStatus.ACTIVE, length: 10 })
+  status?: UserStatus;
 
-  @CreateDateColumn({ name: 'created_dt' })
-  createdDt?: string;
+  @CreateDateColumn()
+  createdDt?: DateTime;
 
-  @UpdateDateColumn({ name: 'updated_dt', onUpdate: 'CURRENT_TIMESTAMP(6)' })
-  updatedDt?: string;
+  @UpdateDateColumn()
+  updatedDt?: DateTime;
+
+  @OneToMany(() => Bucketlist, (bucketlist) => bucketlist.user)
+  bucketlist?: Bucketlist[];
 }
